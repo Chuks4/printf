@@ -72,40 +72,15 @@ int run_printf(const char *format, va_list args, buffer_t *output)
  */
 int _printf(const char *format, ...)
 {
-	va_list ap;
-	int sum = 0, i = 0;
-	int (*func)();
-
-	if (!format || (format[0] == '%' && format[1] == '\0'))
+	buffer_t *output;
+	va_list args;
+	int ret;
+	if (format == NULL)
 		return (-1);
-	va_start(ap, format);
-
-	while (format[i])
-	{
-		if (format[i] == '%')
-		{
-			if (format[i + 1] != '\0')
-				func = get_op(format[i + 1]);
-			if (func == NULL)
-			{
-				_putchar(format[i]);
-				sum++;
-				i++;
-			}
-			else
-			{
-				sum += func(ap);
-				i += 2;
-				continue;
-			}
-		}
-		else
-		{
-			_putchar(format[i]);
-			sum++;
-			i++;
-		}
-	}
-	va_end(ap);
-	return (sum);
+	output = init_buffer();
+	if (output == NULL)
+		return (-1);
+	va_start(args, format);
+	ret = run_printf(format, args, output);
+	return (ret);
 }
